@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THREADED | Premium Graphic Tees</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            900: '#134e4a',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-bg {
+            background: radial-gradient(circle at top right, #1e1b4b 0%, #0f172a 50%, #000000 100%);
+        }
+        .product-card:hover .product-overlay {
+            opacity: 1;
+        }
+        .cart-slide {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .cart-slide.active {
+            transform: translateX(0);
+        }
+        .loader {
+            border-top-color: #14b8a6;
+            -webkit-animation: spinner 1.5s linear infinite;
+            animation: spinner 1.5s linear infinite;
+        }
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <div class="w-10 h-10 bg-gradient-to-br from-teal-400 to-blue-600 rounded-lg flex items-center justify-center transform rotate-3 hover:rotate-6 transition-transform">
+                        <i class="fas fa-tshirt text-white text-xl"></i>
+                    </div>
+                    <span class="font-display text-2xl font-bold tracking-tighter">THREADED</span>
+                </div>
+
+                <div class="hidden md:flex space-x-8">
+                    <a href="#new" class="hover:text-brand-500 transition-colors font-medium">New Drops</a>
+                    <a href="#graphics" class="hover:text-brand-500 transition-colors font-medium">Graphic Tees</a>
+                    <a href="#prints" class="hover:text-brand-500 transition-colors font-medium">Art Prints</a>
+                    <a href="#limited" class="hover:text-brand-500 transition-colors font-medium text-red-500">Limited Edition</a>
+                </div>
+
+                <div class="flex items-center space-x-6">
+                    <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:block text-yellow-400"></i>
+                    </button>
+
+                    <button onclick="toggleSearch()" class="p-2 hover:text-brand-500 transition">
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+
+                    <button onclick="toggleCart()" class="relative p-2 hover:text-brand-500 transition group">
+                        <i class="fas fa-shopping-bag text-xl group-hover:scale-110 transition-transform"></i>
+                        <span id="cart-count" class="absolute -top-1 -right-1 bg-brand-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold opacity-0 transition-opacity">0</span>
+                    </button>
+
+                    <button class="md:hidden p-2" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass border-t border-gray-200 dark:border-gray-800">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#new" class="block py-2 hover:text-brand-500">New Drops</a>
+                <a href="#graphics" class="block py-2 hover:text-brand-500">Graphic Tees</a>
+                <a href="#prints" class="block py-2 hover:text-brand-500">Art Prints</a>
+                <a href="#limited" class="block py-2 text-red-500">Limited Edition</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="w-full max-w-3xl px-6">
+            <input type="text" id="search-input" placeholder="Search for designs, artists..."
+                   class="w-full bg-transparent border-b-2 border-white/30 text-white text-3xl md:text-5xl font-display py-4 focus:outline-none focus:border-brand-500 placeholder-white/50 text-center">
+            <button onclick="toggleSearch()" class="absolute top-8 right-8 text-white/70 hover:text-white text-4xl">&times;</button>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-96 bg-white dark:bg-gray-900 shadow-2xl z-50 cart-slide overflow-y-auto">
+        <div class="p-6 border-b dark:border-gray-800 flex justify-between items-center sticky top-0 bg-white dark:bg-gray-900 z-10">
+            <h2 class="text-2xl font-display font-bold">Your Cart</h2>
+            <button onclick="toggleCart()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div id="cart-items" class="p-6 space-y-4">
+            <div class="text-center text-gray-500 py-12">
+                <i class="fas fa-shopping-basket text-4xl mb-4 opacity-50"></i>
+                <p>Your cart is empty</p>
+                <button onclick="toggleCart(); document.getElementById('new').scrollIntoView()" class="mt-4 text-brand-500 hover:underline">Start Shopping</button>
+            </div>
+        </div>
+        <div class="p-6 border-t dark:border-gray-800 sticky bottom-0 bg-white dark:bg-gray-900">
+            <div class="flex justify-between mb-4 text-lg font-bold">
+                <span>Total</span>
+                <span id="cart-total">$0.00</span>
+            </div>
+            <button onclick="checkout()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-4 rounded-xl font-bold text-lg transition-all hover:scale-[1.02] active:scale-[0.98]">
+                Checkout <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </div>
+    <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 hidden backdrop-blur-sm" onclick="toggleCart()"></div>
+
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+        <div class="absolute inset-0 opacity-30">
+            <div class="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl animate-float"></div>
+            <div class="absolute top-40 right-10 w-72 h-72 bg-teal-500 rounded-full mix-blend-multiply filter blur-xl animate-float" style="animation-delay: 2s"></div>
+            <div class="absolute bottom-20 left-1/3 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl animate-float" style="animation-delay: 4s"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8 animate-slide-up">
+                <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sm font-medium">
+                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    <span>New Collection Dropped</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-tight">
+                    WEAR YOUR <br/>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-purple-500 to-pink-500">ATTITUDE</span>
+                </h1>
+                <p class="text-xl text-gray-300 max-w-lg leading-relaxed">
+                    Premium quality graphic tees featuring exclusive designs from world-renowned artists. Limited drops, unlimited style.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="document.getElementById('new').scrollIntoView({behavior: 'smooth'})" class="px-8 py-4 bg-white text-black rounded-full font-bold hover:scale-105 transition-transform flex items-center gap-2">
+                        Shop Now <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="px-8 py-4 border border-white/30 rounded-full font-bold hover:bg-white/10 transition-all backdrop-blur-sm">
+                        View Lookbook
+                    </button>
+                </div>
+                <div class="flex items-center gap-4 text-sm text-gray-400 pt-4">
+                    <div class="flex -space-x-2">
+                        <img src="https://i.pravatar.cc/100?img=1" class="w-8 h-8 rounded-full border-2 border-black">
+                        <img src="https://i.pravatar.cc/100?img=2" class="w-8 h-8 rounded-full border-2 border-black">
+                        <img src="https://i.pravatar.cc/100?img=3" class="w-8 h-8 rounded-full border-2 border-black">
+                        <div class="w-8 h-8 rounded-full border-2 border-black bg-gray-800 flex items-center justify-center text-xs">+2k</div>
+                    </div>
+                    <p>Trusted by 10,000+ customers</p>
+                </div>
+            </div>
+
+            <div class="relative animate-float hidden md:block">
+                <div class="relative z-10 transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=700&fit=crop" alt="Hero T-shirt" class="rounded-3xl shadow-2xl border border-white/10">
+                    <div class="absolute -bottom-6 -left-6 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white font-bold">HOT</div>
+                            <div>
+                                <p class="text-sm font-bold">Trending Now</p>
+                                <p class="text-xs text-gray-500">Retro Wave Series</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <i class="fas fa-chevron-down text-white/50 text-2xl"></i>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-20 bg-white dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="text-center space-y-2 p-6 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <i class="fas fa-truck text-3xl text-brand-500 mb-2"></i>
+                <h3 class="font-bold">Free Shipping</h3>
+                <p class="text-sm text-gray-500">On orders over $50</p>
+            </div>
+            <div class="text-center space-y-2 p-6 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <i class="fas fa-undo text-3xl text-brand-500 mb-2"></i>
+                <h3 class="font-bold">Easy Returns</h3>
+                <p class="text-sm text-gray-500">30-day return policy</p>
+            </div>
+            <div class="text-center space-y-2 p-6 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <i class="fas fa-leaf text-3xl text-brand-500 mb-2"></i>
+                <h3 class="font-bold">Eco-Friendly</h3>
+                <p class="text-sm text-gray-500">100% organic cotton</p>
+            </div>
+            <div class="text-center space-y-2 p-6 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <i class="fas fa-shield-alt text-3xl text-brand-500 mb-2"></i>
+                <h3 class="font-bold">Secure Payment</h3>
+                <p class="text-sm text-gray-500">256-bit SSL encryption</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="new" class="py-20 bg-gray-50 dark:bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-display font-bold mb-4">Fresh Drops</h2>
+                    <p class="text-gray-600 dark:text-gray-300">Handpicked designs for the bold and the brave.</p>
+                </div>
+
+                <!-- Filters -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterProducts('all')" class="filter-btn active px-6 py-2 rounded-full border-2 border-black dark:border-white font-medium transition-all hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black" data-filter="all">All</button>
+                    <button onclick="filterProducts('graphic')" class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 font-medium transition-all hover:border-black dark:hover:border-white" data-filter="graphic">Graphic</button>
+                    <button onclick="filterProducts('minimal')" class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 font-medium transition-all hover:border-black dark:hover:border-white" data-filter="minimal">Minimal</button>
+                    <button onclick="filterProducts('oversized')" class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 font-medium transition-all hover:border-black dark:hover:border-white" data-filter="oversized">Oversized</button>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <!-- Products will be injected here by JavaScript -->
+            </div>
+
+            <div class="text-center mt-16">
+                <button class="px-12 py-4 border-2 border-black dark:border-white rounded-full font-bold hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all transform hover:scale-105">
+                    Load More Designs
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Banner -->
+    <section class="py-20 bg-black text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
+            <img src="https://images.unsplash.com/photo-1556906781-9a412961c28c?w=1600&h=900&fit=crop" class="w-full h-full object-cover">
+        </div>
+        <div class="max-w-7xl mx-auto px-4 relative z-10 grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <span class="text-brand-500 font-bold tracking-widest">LIMITED EDITION</span>
+                <h2 class="text-5xl md:text-6xl font-display font-bold">COLLAB <br/>COLLECTION</h2>
+                <p class="text-xl text-gray-300">Exclusive designs in collaboration with underground artists. Only 100 pieces per design.</p>
+                <div class="flex gap-4 text-3xl font-bold font-display">
+                    <div class="text-center">
+                        <div id="hours" class="bg-white/10 rounded-lg p-4 backdrop-blur">23</div>
+                        <div class="text-xs mt-2 text-gray-400">HOURS</div>
+                    </div>
+                    <div class="text-center">
+                        <div id="minutes" class="bg-white/10 rounded-lg p-4 backdrop-blur">59</div>
+                        <div class="text-xs mt-2 text-gray-400">MINUTES</div>
+                    </div>
+                    <div class="text-center">
+                        <div id="seconds" class="bg-white/10 rounded-lg p-4 backdrop-blur">42</div>
+                        <div class="text-xs mt-2 text-gray-400">SECONDS</div>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('limited').scrollIntoView()" class="px-8 py-4 bg-white text-black rounded-full font-bold hover:scale-105 transition-transform">
+                    Shop Limited Drop
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-20 bg-gradient-to-br from-brand-600 to-purple-700 text-white">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-4xl md:text-5xl font-display font-bold mb-6">Join the Movement</h2>
+            <p class="text-xl mb-8 text-white/90">Subscribe for exclusive drops, early access to limited editions, and 15% off your first order.</p>
+            <form onsubmit="subscribeNewsletter(event)" class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                <input type="email" placeholder="Enter your email" required class="flex-1 px-6 py-4 rounded-full text-black focus:outline-none focus:ring-4 focus:ring-white/30">
+                <button type="submit" class="px-8 py-4 bg-black text-white rounded-full font-bold hover:scale-105 transition-transform">
+                    Subscribe
+                </button>
+            </form>
+            <p class="mt-4 text-sm text-white/70">No spam, ever. Unsubscribe anytime.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div class="space-y-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-teal-400 to-blue-600 rounded flex items-center justify-center">
+                        <i class="fas fa-tshirt text-white text-sm"></i>
+                    </div>
+                    <span class="font-display text-xl font-bold">THREADED</span>
+                </div>
+                <p class="text-gray-400 text-sm">Premium graphic tees for the modern individual. Express yourself without saying a word.</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-500 transition-colors"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-500 transition-colors"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-500 transition-colors"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-4">Shop</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="#" class="hover:text-white transition">New Arrivals</a></li>
+                    <li><a href="#" class="hover:text-white transition">Best Sellers</a></li>
+                    <li><a href="#" class="hover:text-white transition">Limited Edition</a></li>
+                    <li><a href="#" class="hover:text-white transition">Sale</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-4">Help</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="#" class="hover:text-white transition">Shipping & Returns</a></li>
+                    <li><a href="#" class="hover:text-white transition">Size Guide</a></li>
+                    <li><a href="#" class="hover:text-white transition">Track Order</a></li>
+                    <li><a href="#" class="hover:text-white transition">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-4">Contact</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><i class="fas fa-envelope mr-2"></i> hello@threaded.com</li>
+                    <li><i class="fas fa-phone mr-2"></i> +1 (555) 123-4567</li>
+                    <li><i class="fas fa-map-marker-alt mr-2"></i> Los Angeles, CA</li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+            <p>&copy; 2024 Threaded. All rights reserved.</p>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+                <a href="#" class="hover:text-white">Privacy Policy</a>
+                <a href="#" class="hover:text-white">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-8 right-8 bg-black text-white px-6 py-4 rounded-xl shadow-2xl transform translate-y-24 transition-transform duration-300 z-50 flex items-center gap-3">
+        <i class="fas fa-check-circle text-green-400 text-xl"></i>
+        <div>
+            <h4 class="font-bold">Added to Cart!</h4>
+            <p class="text-sm text-gray-300" id="toast-message">Item added successfully</p>
+        </div>
+    </div>
+
+    <!-- Quick View Modal -->
+    <div id="quick-view" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white dark:bg-gray-900 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative animate-slide-up">
+            <button onclick="closeQuickView()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition z-10">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="grid md:grid-cols-2 gap-8 p-8" id="quick-view-content">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Product Data
+        const products = [
+            {
+                id: 1,
+                name: "Cyber Punk Tee",
+                category: "graphic",
+                price: 45.00,
+                image: "https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=500&h=600&fit=crop",
+                description: "Neon-drenched cyberpunk aesthetic featuring metallic ink printing.",
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                badge: "Best Seller"
+            },
+            {
+                id: 2,
+                name: "Minimal Void",
+                category: "minimal",
+                price: 35.00,
+                image: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=500&h=600&fit=crop",
+                description: "Clean lines, pure cotton, essential minimalism.",
+                sizes: ["S", "M", "L", "XL"],
+                badge: null
+            },
+            {
+                id: 3,
+                name: "Retro Wave",
+                category: "graphic",
+                price: 48.00,
+                image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=500&h=600&fit=crop",
+                description: "80s inspired sunset graphics with neon pink gradients.",
+                sizes: ["M", "L", "XL", "XXL"],
+                badge: "New"
+            },
+            {
+                id: 4,
+                name: "Oversized Comfort",
+                category: "oversized",
+                price: 52.00,
+                image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=500&h=600&fit=crop",
+                description: "Drop-shoulder oversized fit with heavyweight cotton.",
+                sizes: ["S", "M", "L"],
+                badge: "Limited"
+            },
+            {
+                id: 5,
+                name: "Abstract Faces",
+                category: "graphic",
+                price: 42.00,
+                image: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?w=500&h=600&fit=crop",
+                description: "Cubist-inspired face art print.",
+                sizes: ["S", "M", "L", "XL"],
+                badge: null
+            },
+            {
+                id: 6,
+                name: "Tech Noir",
+                category: "graphic",
+                price: 46.00,
+                image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=500&h=600&fit=crop",
+                description: "Matrix-inspired code rain design.",
+                sizes: ["M", "L", "XL"],
+                badge: "Hot"
+            },
+            {
+                id: 7,
+                name: "Pure White Oversized",
+                category: "oversized",
+                price: 38.00,
+                image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=600&fit=crop",
+                description: "Essential oversized white tee. Boxy fit.",
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                badge: null
+            },
+            {
+                id: 8,
+                name: "Geometric Dreams",
+                category: "minimal",
+                price: 40.00,
+                image: "https://images.unsplash.com/photo-1571945153262-3947e4c9fbfa?w=500&h=600&fit=crop",
+                description: "Subtle geometric patterns in monochrome.",
+                sizes: ["S", "M", "L", "XL"],
+                badge: null
+            }
+        ];
+
+        // Cart State
+        let cart = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts(products);
+            startTimer();
+
+            // Navbar scroll effect
+            window.addEventListener('scroll', () => {
+                const nav = document.getElementById('navbar');
+                if (window.scrollY > 50) {
+                    nav.classList.add('shadow-lg', 'bg-white/90', 'dark:bg-gray-900/90');
+                } else {
+                    nav.classList.remove('shadow-lg', 'bg-white/90', 'dark:bg-gray-900/90');
+                }
+            });
+        });
+
+        // Render Products
+        function renderProducts(productsToRender) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = productsToRender.map(product => `
+                <div class="product-card group relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                    ${product.badge ? `
+                        <div class="absolute top-4 left-4 z-10 bg-black dark:bg-white text-white dark:text-black px-3 py-1 rounded-full text-xs font-bold">
+                            ${product.badge}
+                        </div>
+                    ` : ''}
+                    <div class="relative overflow-hidden aspect-[4/5]">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="product-overlay absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 flex items-center justify-center gap-4">
+                            <button onclick="openQuickView(${product.id})" class="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform" title="Quick View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="addToCart(${product.id})" class="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform" title="Add to Cart">
+                                <i class="fas fa-shopping-bag"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-lg leading-tight">${product.name}</h3>
+                            <span class="font-bold text-brand-600">$${product.price}</span>
+                        </div>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mb-4 line-clamp-2">${product.description}</p>
+                        <div class="flex gap-2">
+                            ${product.sizes.map(size => `
+                                <button onclick="selectSize(this)" class="size-btn w-8 h-8 rounded border border-gray-300 dark:border-gray-600 text-xs font-medium hover:border-black dark:hover:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all">${size}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter Products
+        function filterProducts(category) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-black', 'text-white', 'dark:bg-white', 'dark:text-black');
+                btn.classList.add('border-gray-300', 'dark:border-gray-600');
+                if (btn.dataset.filter === category) {
+                    btn.classList.add('active', 'bg-black', 'text-white', 'dark:bg-white', 'dark:text-black');
+                    btn.classList.remove('border-gray-300', 'dark:border-gray-600');
+                }
+            });
+
+            // Filter logic
+            if (category === 'all') {
+                renderProducts(products);
+            } else {
+                const filtered = products.filter(p => p.category === category);
+                renderProducts(filtered);
+            }
+        }
+
+        // Size Selection
+        function selectSize(btn) {
+            const siblings = btn.parentElement.querySelectorAll('.size-btn');
+            siblings.forEach(s => {
+                s.classList.remove('bg-black', 'text-white', 'dark:bg-white', 'dark:text-black');
+                s.classList.add('border-gray-300');
+            });
+            btn.classList.remove('border-gray-300');
+            btn.classList.add('bg-black', 'text-white', 'dark:bg-white', 'dark:text-black');
+        }
+
+        // Cart Functions
+        function addToCart(productId, size = 'M') {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId && item.size === size);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, size, quantity: 1 });
+            }
+
+            updateCart();
+            showToast(`${product.name} added to cart!`);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function updateQuantity(index, change) {
+            cart[index].quantity += change;
+            if (cart[index].quantity <= 0) {
+                removeFromCart(index);
+            } else {
+                updateCart();
+            }
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            const cartTotal = document.getElementById('cart-total');
+
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            cartCount.textContent = totalItems;
+            cartCount.style.opacity = totalItems > 0 ? '1' : '0';
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="text-center text-gray-500 py-12">
+                        <i class="fas fa-shopping-basket text-4xl mb-4 opacity-50"></i>
+                        <p>Your cart is empty</p>
+                        <button onclick="toggleCart(); document.getElementById('new').scrollIntoView()" class="mt-4 text-brand-500 hover:underline">Start Shopping</button>
+                    </div>
+                `;
+            } else {
+                cartItems.innerHTML = cart.map((item, index) => `
+                    <div class="flex gap-4 bg-gray-50 dark:bg-gray-800 p-4 rounded-xl animate-fade-in">
+                        <img src="${item.image}" class="w-20 h-24 object-cover rounded-lg">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-sm">${item.name}</h4>
+                            <p class="text-gray-500 text-xs mb-2">Size: ${item.size}</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2 bg-white dark:bg-gray-900 rounded-lg px-2 py-1">
+                                    <button onclick="updateQuantity(${index}, -1)" class="text-gray-500 hover:text-black dark:hover:text-white px-1">-</button>
+                                    <span class="text-sm font-bold w-4 text-center">${item.quantity}</span>
+                                    <button onclick="updateQuantity(${index}, 1)" class="text-gray-500 hover:text-black dark:hover:text-white px-1">+</button>
+                                </div>
+                                <span class="font-bold">$${(item.price * item.quantity).toFixed(2)}</span>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="text-gray-400 hover:text-red-500 transition h-fit">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            cartTotal.textContent = '$' + totalPrice.toFixed(2);
+        }
+
+        function toggleCart() {
+            const sidebar = document.getElementById('cart-sidebar');
+            const overlay = document.getElementById('cart-overlay');
+
+            if (sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            } else {
+                sidebar.classList.add('active');
+                overlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Quick View
+        function openQuickView(productId) {
+            const product = products.find(p => p.id === productId);
+            const modal = document.getElementById('quick-view');
+            const content = document.getElementById('quick-view-content');
+
+            content.innerHTML = `
+                <div class="aspect-[4/5] rounded-2xl overflow-hidden">
+                    <img src="${product.image}" class="w-full h-full object-cover">
+                </div>
+                <div class="flex flex-col justify-center space-y-6">
+                    <div>
+                        <h2 class="text-3xl font-display font-bold mb-2">${product.name}</h2>
+                        <p class="text-2xl text-brand-600 font-bold">$${product.price}</p>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">${product.description}</p>
+
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Select Size</label>
+                        <div class="flex gap-3" id="quick-view-sizes">
+                            ${product.sizes.map(size => `
+                                <button onclick="selectQuickViewSize(this)" class="size-select px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg font-medium hover:border-black dark:hover:border-white transition-all" data-size="${size}">${size}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <button onclick="addToCartFromQuickView(${product.id})" class="w-full py-4 bg-black dark:bg-white text-white dark:text-black rounded-xl font-bold hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+                            <i class="fas fa-shopping-bag"></i> Add to Cart
+                        </button>
+                        <button onclick="closeQuickView()" class="w-full py-4 border-2 border-gray-300 dark:border-gray-600 rounded-xl font-bold hover:border-black dark:hover:border-white transition-all">
+                            Continue Shopping
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-4 text-sm text-gray-500 pt-4 border-t dark:border-gray-800">
+                        <span><i class="fas fa-truck mr-2"></i>Free Shipping</span>
+                        <span><i class="fas fa-undo mr-2"></i>30-Day Returns</span>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function selectQuickViewSize(btn) {
+            document.querySelectorAll('.size-select').forEach(b => {
+                b.classList.remove('bg-black', 'text-white', 'dark:bg-white', 'dark:text-black', 'border-black', 'dark:border-white');
+                b.classList.add('border-gray-300', 'dark:border-gray-600');
+            });
+            btn.classList.remove('border-gray-300', 'dark:border-gray-600');
+            btn.classList.add('bg-black', 'text-white', 'dark:bg-white', 'dark:text-black', 'border-black', 'dark:border-white');
+        }
+
+        function addToCartFromQuickView(productId) {
+            const selectedSize = document.querySelector('.size-select.bg-black')?.dataset.size ||
+                               document.querySelector('.size-select.dark\\:bg-white')?.dataset.size || 'M';
+            addToCart(productId, selectedSize);
+            closeQuickView();
+        }
+
+        function closeQuickView() {
+            const modal = document.getElementById('quick-view');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        // UI Functions
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function toggleSearch() {
+            const overlay = document.getElementById('search-overlay');
+            const input = document.getElementById('search-input');
+
+            if (overlay.classList.contains('hidden')) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => {
+                    overlay.classList.remove('opacity-0');
+                    input.focus();
+                }, 10);
+            } else {
+                overlay.classList.add('opacity-0');
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = message;
+            toast.classList.remove('translate-y-24');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-24');
+            }, 3000);
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                showToast('Your cart is empty!');
+                return;
+            }
+            alert('Proceeding to checkout...\n\nThis would integrate with Stripe/PayPal in production!');
+        }
+
+        function subscribeNewsletter(e) {
+            e.preventDefault();
+            showToast('Welcome to the family! Check your email for 15% off.');
+            e.target.reset();
+        }
+
+        // Countdown Timer
+        function startTimer() {
+            let hours = 23, minutes = 59, seconds = 42;
+            setInterval(() => {
+                seconds--;
+                if (seconds < 0) {
+                    seconds = 59;
+                    minutes--;
+                }
+                if (minutes < 0) {
+                    minutes = 59;
+                    hours--;
+                }
+                if (hours < 0) hours = 23;
+
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            }, 1000);
+        }
+
+        // Search functionality
+        document.getElementById('search-input')?.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            if (term.length > 0) {
+                const filtered = products.filter(p =>
+                    p.name.toLowerCase().includes(term) ||
+                    p.description.toLowerCase().includes(term) ||
+                    p.category.toLowerCase().includes(term)
+                );
+                renderProducts(filtered);
+            } else {
+                renderProducts(products);
+            }
+        });
+    </script>
+</body>
+</html>
